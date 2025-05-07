@@ -5,7 +5,7 @@ function Header() {
   return (
     <div>
         {/* logo aayega yaha */}
-        <div className='p-3 shadow-sm flex justify-between items-center px-5'>
+        <div className='p-3 shadow-sm flex justify-end items-center px-5'>
             <Button>Sign In</Button>
         </div>
     </div>
