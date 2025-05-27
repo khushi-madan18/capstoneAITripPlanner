@@ -21,10 +21,10 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById('root')).render(
   
   <React.StrictMode>
-      <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_AUTH_CLENT_ID}>
+      <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_AUTH_CLENT_ID} redirectUri="http://localhost:5173">
       <Header />
       <Toaster />
       <RouterProvider router={router}/>
-     </GoogleOAuthProvider>;
+     </GoogleOAuthProvider>
   </React.StrictMode>
 )

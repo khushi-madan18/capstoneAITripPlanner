@@ -5,6 +5,7 @@ import { AI_PROMPT, SelectbudgetOptions } from "@/constants/options";
 import { SelectTravelsList } from "@/constants/options";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import {
     Dialog,
@@ -17,13 +18,17 @@ import {
 
 import { FcGoogle } from "react-icons/fc";
 import { useGoogleLogin } from "@react-oauth/google";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "@/service/firebaseConfig";
 
 function CreateTrip() {
     const [place, setPlace] = useState();
 
     const [formData, setFormData] = useState([]);
 
-    const [openDialog, setOpenDialog] = useState(false)
+    const [openDialog, setOpenDialog] = useState(false);
+
+    const [loading, setLoading] = useState(false)
 
     const handleInputChange = (name, value) => {
         setFormData({
@@ -39,8 +44,10 @@ function CreateTrip() {
 
 
     const login = useGoogleLogin({
-        onSuccess:(codeResp)=>console.log(codeResp),
-        onError:(error)=>console.log(error)
+        onSuccess: (codeResp) => GetUserProfile(codeResp),
+        onError: (error) => console.log(error),
+        flow: 'auth-code',
+        windowFeatures: 'scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no,width=600,height=600,top=0,left=0,noopener=yes,noreferrer=yes'
     })
 
     const OnGenerateTrip = async () => {
@@ -58,13 +65,15 @@ function CreateTrip() {
             return;
         }
 
+        setLoading(true)
+
         const FINAL_PROMPT = AI_PROMPT
             .replace('{location}', formData?.location?.label)
             .replace('{totalDays}', formData?.noOfDays)
             .replace('{people}', formData?.people)
             .replace('{budget}', formData?.budget);
 
-        console.log(FINAL_PROMPT);
+
 
         try {
             const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
@@ -82,7 +91,41 @@ function CreateTrip() {
             console.error(err);
             toast.error("Something went wrong while generating your trip.");
         }
+        setLoading(false)
+        SaveAiTrip(result?.response?.text())
     };
+
+    const SaveAiTrip = async (TripData) => {
+        setLoading(true)
+        const user = JSON.parse(localStorage.getItem('user'));
+        const docId = Date.now().toString()
+        await setDoc(doc(db, "AITrips", docId), {
+            userSelection: formData,
+            tripData: JSON.parse(TripData),
+            userEmail: user?.email,
+            id: docId
+
+        });
+        setLoading(false)
+
+
+    }
+
+    const GetUserProfile = (tokenInfo) => {
+        axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${tokenInfo?.access_token}`, {
+            headers: {
+                Authorization: `Bearer ${tokenInfo?.access_token}`,
+                Accept: 'Application/json'
+            }
+        }).then((resp) => {
+            console.log(resp);
+            localStorage.setItem('user', JSON.stringify(resp.data));
+            console.log("Closing dialog now");
+            setOpenDialog(false);
+            OnGenerateTrip();
+
+        })
+    }
 
 
     return (
@@ -144,24 +187,31 @@ function CreateTrip() {
             </div>
 
             <div className='ml-50 mr-50 my-10 justify-end flex'>
-                <Button onClick={OnGenerateTrip}>Generate Trip</Button>
+                <Button
+                    disabled={loading}
+                    onClick={OnGenerateTrip}>
+                    {loading ? <AiOutlineLoading3Quarters className="h-7 w-7 animate-spin" /> : 'Generate Trip'}
+                </Button>
             </div>
 
-            <Dialog open={openDialog}>
-                
+            <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+
                 <DialogContent>
                     <DialogHeader>
                         
-                        <DialogDescription>
-                            {/* logo */}
-                            <h2 className="font-bold text-lg mt-7">Sign In with Google</h2>
-                            <p>Sign In to the App with Google Authentication securely.</p>
+                        <DialogDescription asChild>
+                            <div>
+                            <h2 className="font-bold text-lg mt-2">Sign In With Google</h2>
+                                <p>Sign in to the App with Google Authentication securely.</p>
 
-                            <Button className="w-full mt-5 flex gap-4 items-center"
-                            onClick = {login}
-                            > 
-                            <FcGoogle className="h-7 w-7"/>
-                            Sign In With Google</Button>
+                                <Button
+                                    className="w-full mt-5 flex gap-4 items-center"
+                                    onClick={login}
+                                >
+                                    <FcGoogle className='h-7 w-7' />
+                                    Sign In With Google
+                                </Button>
+                            </div>
                         </DialogDescription>
                     </DialogHeader>
                 </DialogContent>
