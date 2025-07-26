@@ -51,8 +51,8 @@ function Header() {
   return (
     <div>
         
-        <div className='p-3 shadow-sm flex justify-end items-center px-5'>
-        <h2 className='flex text-[#ef7c6c] text-4xl mr-250 font-bold'>TripTailor</h2> 
+        <div className='p-3 shadow-sm flex flex-wrap justify-between items-center px-5'>
+        <h2 className='text-[#ef7c6c] text-2xl md:text-4xl font-bold mb-2 md:mb-0'>TripTailor</h2> 
         <div>
         {user?
         <div className='flex gap-3 items-center'>

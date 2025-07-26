@@ -199,13 +199,13 @@ function CreateTrip() {
 
 
     return (
-        <div className='sm:px-10 md:px-32 lg:px-56 xl:px-10 px-5 mt-10 '>
-            <h2 className='font-bold text-3xl ml-50 mr-50'>Tell us your travel prefernces🌴🏕️</h2>
-            <p className='mt-3 text-gray-500 text-xl ml-50 mr-50'>Just provide some basic information, and our trip planner will generate a customized itinerary based on your preferences.</p>
+        <div className="px-4 sm:px-10 md:px-32 xl:px-56 mt-10 w-full">
+            <h2 className="font-bold text-2xl sm:text-3xl text-center">Tell us your travel prefernces🌴🏕️</h2>
+            <p className="mt-3 text-gray-500 text-base sm:text-lg text-center">Just provide some basic information, and our trip planner will generate a customized itinerary based on your preferences.</p>
 
             <div className='mt-20 flex flex-col gap-9'>
-                <div className="ml-50 mr-50">
-                    <h2 className='text-xl my-3 font-medium'>What is your destination?</h2>
+                <div className="mt-12">
+                    <h2 className="text-lg sm:text-xl mb-3 font-medium">What is your destination?</h2>
                     <GooglePlacesAutocomplete
                         apiKey={import.meta.env.VITE_GOOGLE_PLACE_API_KEY}
                         selectProps={{
@@ -217,46 +217,46 @@ function CreateTrip() {
                 </div>
             </div>
 
-            <div className="ml-50 mr-50">
-                <h2 className='text-xl my-3 font-medium mt-15'>How many days are you planning your trip for?</h2>
+            <div className="mt-8">
+                <h2 className="text-lg sm:text-xl mb-3 font-medium">How many days are you planning your trip for?</h2>
                 <Input placeholder={'Ex.3'} type="number" min="0"
                     onChange={(e) => handleInputChange('noOfDays', e.target.value)}
                 />
             </div>
 
-            <div className="ml-50 mr-50">
-                <h2 className='text-xl my-3 font-medium mt-15'>What is Your Budget?</h2>
-                <div className="grid grid-cols-3 gap-5 mt-5">
+            <div className="mt-8">
+                <h2 className="text-lg sm:text-xl mb-3 font-medium">What is Your Budget?</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 mt-4">
                     {SelectbudgetOptions.map((item, index) => (
                         <div key={index}
                             onClick={() => handleInputChange('budget', item.title)}
                             className={`p-4 border rounded-lg hover:shadow-lg cursor-pointer
                         ${formData?.budget == item.title && 'shadow-lg border-black'}`}>
-                            <h2 className="text-4xl">{item.icon}</h2>
-                            <h2 className="font-bold text-lg">{item.title}</h2>
+                            <h2 className="text-3xl sm:text-4xl">{item.icon}</h2>
+                            <h2 className="font-bold text-base sm:text-lg mt-2">{item.title}</h2>
                             <h2 className="text-sm text-gray-500">{item.desc}</h2>
                         </div>
                     ))}
                 </div>
             </div>
 
-            <div className="ml-50 mr-50">
-                <h2 className='text-xl my-3 font-medium mt-15'>Who do you plan on travelling with on your next Adventure?</h2>
-                <div className="grid grid-cols-3 gap-5 mt-5">
+            <div className="mt-8">
+                <h2 className="text-lg sm:text-xl mb-3 font-medium">Who do you plan on travelling with on your next Adventure?</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 mt-4">
                     {SelectTravelsList.map((item, index) => (
                         <div key={index}
                             onClick={() => handleInputChange('people', item.people)}
                             className={`p-4 border rounded-lg hover:shadow-lg cursor-pointer
                         ${formData?.people == item.people && 'shadow-lg border-black'}`}>
-                            <h2 className="text-4xl">{item.icon}</h2>
-                            <h2 className="font-bold text-lg">{item.title}</h2>
+                            <h2 className="text-3xl sm:text-4xl">{item.icon}</h2>
+                            <h2 className="font-bold text-base sm:text-lg mt-2">{item.title}</h2>
                             <h2 className="text-sm text-gray-500">{item.desc}</h2>
                         </div>
                     ))}
                 </div>
             </div>
 
-            <div className='ml-50 mr-50 my-10 justify-end flex'>
+            <div className="mt-10 flex justify-end">
                 <Button
                     disabled={loading}
                     onClick={OnGenerateTrip}>
