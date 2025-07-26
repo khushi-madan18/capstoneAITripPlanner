@@ -256,7 +256,11 @@ function CreateTrip() {
                 </div>
             </div>
 
-            <div className="mt-10 flex justify-end">
+           
+            <div className="mt-10 flex justify-between flex-wrap gap-3">
+            <Button variant="outline" onClick={() => navigate("/")}>
+                Back to Home
+            </Button>
                 <Button
                     disabled={loading}
                     onClick={OnGenerateTrip}>
