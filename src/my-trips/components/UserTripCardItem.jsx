@@ -1,39 +1,53 @@
-import React from 'react'
-import { useState,useEffect } from 'react'
-import { GetPlaceDetails } from '@/service/GlobalAPI'
-import { PHOTO_REF_URL } from '@/service/GlobalAPI'
-import { Link } from 'react-router-dom'
-function UserTripCardItem({trip}) {
-    const [photoUrl, setPhotoUrl] = useState()
-  useEffect(()=>{
-    trip && GetPlacePhoto()
-  },[trip])
+import React, { useEffect, useState } from 'react';
+import { GetPlaceDetails, PHOTO_REF_URL } from '@/service/GlobalAPI';
+import { Link } from 'react-router-dom';
 
-  const GetPlacePhoto = async ()=>{
-    const data = {
-      textQuery:trip?.userSelection?.location?.label
+function UserTripCardItem({ trip }) {
+  const [photoUrl, setPhotoUrl] = useState('');
+
+  useEffect(() => {
+    if (trip?.userSelection?.location?.label) {
+      GetPlacePhoto(trip.userSelection.location.label);
     }
-    const result = await GetPlaceDetails(data).then(resp=>{
-      console.log(resp.data.places[0].photos[3].name)
+  }, [trip]);
 
-      const PhotoUrl = PHOTO_REF_URL.replace('{NAME}',resp.data.places[0].photos[3].name);
-      setPhotoUrl(PhotoUrl)
-    })
+  const GetPlacePhoto = async (label) => {
+    try {
+      const data = { textQuery: label };
+      const resp = await GetPlaceDetails(data);
+      const photoName = resp?.data?.places?.[0]?.photos?.[3]?.name;
+      if (photoName) {
+        const url = PHOTO_REF_URL.replace('{NAME}', photoName);
+        setPhotoUrl(url);
+      }
+    } catch (error) {
+      console.error('Error fetching place photo:', error);
+    }
+  };
 
+  if (!trip?.userSelection || !trip?.userSelection?.location) {
+    return null; // Skip rendering invalid trips
   }
+
   return (
-    <Link to={'/view-trip/' + trip?.id}>
-    <div className='hover:scale-105 transition-all hover:shadow-md'>
-        <img src={photoUrl} className='w-full h-[250px] rounded-xl' />
-        <div>
-            <h2 className='font-bold text-lg'>
-                {trip?.userSelection?.location?.label}
-            </h2>
-            <h2 className='text-sm text-gray-500'>{trip?.userSelection?.noOfDays} Days trip with {trip?.userSelection?.budget} Budget</h2>
+    <Link to={`/view-trip/${trip?.id || ''}`}>
+      <div className='hover:scale-105 transition-all hover:shadow-md'>
+        <img
+          src={photoUrl || 'https://via.placeholder.com/300x250?text=No+Image'}
+          alt='Trip'
+          className='w-full h-[250px] object-cover rounded-xl'
+        />
+        <div className='mt-2'>
+          <h2 className='font-bold text-lg'>
+            {trip.userSelection.location.label}
+          </h2>
+          <p className='text-sm text-gray-500'>
+            {trip.userSelection.noOfDays} Days trip with {trip.userSelection.budget} Budget
+          </p>
         </div>
-    </div>
+      </div>
     </Link>
-  )
+  );
 }
 
-export default UserTripCardItem
+export default UserTripCardItem;
