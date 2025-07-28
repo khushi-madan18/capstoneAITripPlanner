@@ -79,7 +79,7 @@ function Header() {
          <Dialog open={openDialog} onOpenChange={setOpenDialog}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle className="sr-only">Google Login</DialogTitle> {/* screen reader only */}
+                        <DialogTitle className="sr-only">Google Login</DialogTitle> 
                         <DialogDescription asChild>
                             <div>
                                 <h2 className="font-bold text-lg mt-2">Sign In With Google</h2>

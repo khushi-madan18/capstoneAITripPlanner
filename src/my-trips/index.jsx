@@ -3,11 +3,11 @@
 import { db } from '@/service/firebaseConfig';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // fixed: useNavigate, not useNavigation
+import { useNavigate } from 'react-router-dom'; 
 import UserTripCardItem from './components/UserTripCardItem';
 
 function MyTrips() {
-  const navigate = useNavigate(); // ✅ fixed hook name
+  const navigate = useNavigate(); 
   const [userTrips, setUserTrips] = useState([]);
 
   useEffect(() => {
@@ -24,7 +24,7 @@ function MyTrips() {
 
     const q = query(collection(db, 'AITrips'), where('userEmail', '==', user?.email));
     const querySnapshot = await getDocs(q);
-    setUserTrips([]); // optional reset
+    setUserTrips([]); 
     querySnapshot.forEach((doc) => {
       console.log(doc.id, ' => ', doc.data());
       setUserTrips((prev) => [...prev, doc.data()]);
@@ -48,7 +48,6 @@ function MyTrips() {
             ))}
       </div>
 
-      {/* ✅ Back to Home Button */}
       <div className='flex justify-center mt-12 mb-10'>
         <button
           onClick={() => navigate('/')}
