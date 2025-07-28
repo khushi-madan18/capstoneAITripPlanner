@@ -31,7 +31,7 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById('root')).render(
   
   <React.StrictMode>
-      <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_AUTH_CLENT_ID} redirectUri="http://localhost:5173">
+      <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_AUTH_CLENT_ID} redirectUri="https://triptailorai.netlify.app/">
       <Header />
       <Toaster />
       <RouterProvider router={router}/>
